@@ -6,4 +6,4 @@ spec:
   defaultNetwork:
     type: OpenShiftSDN
     openshiftSDNConfig:
-      mtu: 1400
+      mtu: 1350

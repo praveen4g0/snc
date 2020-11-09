@@ -253,7 +253,7 @@ VM_PREFIX=${CRC_VM_NAME}-${random_string}
 # Initial certificate is only valid for 24 hours, after rotation, it's valid for 30 days.
 # We check if it's valid for more than 25 days rather than 30 days to give us some
 # leeway regarding when we run the check with respect to rotation time
-if ! ${SSH} core@api.${CRC_VM_NAME}.${BASE_DOMAIN} -- sudo openssl x509 -checkend 2160000 -noout -in /var/lib/kubelet/pki/kubelet-client-current.pem; then
+if ! ${SSH} core@api.${CRC_VM_NAME}.${BASE_DOMAIN} -- sudo openssl x509 -checkend 216 -noout -in /var/lib/kubelet/pki/kubelet-client-current.pem; then
     echo "Certs are not yet rotated to have 30 days validity"
     # Only validate the cert expire time if SNC_VALIDATE_CERT is set to true
     if [ "${SNC_VALIDATE_CERT:-true}" = true ]; then
@@ -397,21 +397,21 @@ tar cSf - $libvirtDestDir | xz --threads=0 >$libvirtDestDir.$crcBundleSuffix
 # HyperKit image generation
 # This must be done after the generation of libvirt image as it reuse some of
 # the content of $libvirtDestDir
-hyperkitDestDir="crc_hyperkit_${destDirSuffix}"
-mkdir $hyperkitDestDir
-generate_hyperkit_directory $libvirtDestDir $hyperkitDestDir $1
+# hyperkitDestDir="crc_hyperkit_${destDirSuffix}"
+# mkdir $hyperkitDestDir
+# generate_hyperkit_directory $libvirtDestDir $hyperkitDestDir $1
 
-tar cSf - $hyperkitDestDir | xz --threads=0 >$hyperkitDestDir.$crcBundleSuffix
+# tar cSf - $hyperkitDestDir | xz --threads=0 >$hyperkitDestDir.$crcBundleSuffix
 
-# HyperV image generation
-#
-# This must be done after the generation of libvirt image as it reuses some of
-# the content of $libvirtDestDir
-hypervDestDir="crc_hyperv_${destDirSuffix}"
-mkdir $hypervDestDir
-generate_hyperv_directory $libvirtDestDir $hypervDestDir
+# # HyperV image generation
+# #
+# # This must be done after the generation of libvirt image as it reuses some of
+# # the content of $libvirtDestDir
+# hypervDestDir="crc_hyperv_${destDirSuffix}"
+# mkdir $hypervDestDir
+# generate_hyperv_directory $libvirtDestDir $hypervDestDir
 
-tar cSf - $hypervDestDir | xz --threads=0 >$hypervDestDir.$crcBundleSuffix
+# tar cSf - $hypervDestDir | xz --threads=0 >$hypervDestDir.$crcBundleSuffix
 
 # Cleanup up packages and vmlinux/initramfs files
 rm -fr $1/packages $1/vmlinuz* $1/initramfs*
